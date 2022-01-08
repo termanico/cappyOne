@@ -54,8 +54,5 @@
         "features": {
             "in_memory_db": true
         }
-    },
-    "sapux": [
-        "app/cappy_one_ui"
-    ]
+    }
 }
