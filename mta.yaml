@@ -12,62 +12,11 @@ modules:
       srv-url: ${default-url}
   parameters:
     buildpack: nodejs_buildpack
-- name: cappyOne-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: cappyOne-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
-    requires:
-    - artifacts:
-      - cappyoneui.zip
-      name: cappyoneui
-      target-path: resources/
-- name: cappyoneui
-  type: html5
-  path: app/cappy_one_ui
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
-resources:
-- name: cappyOne-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: cappyOne-html5-srv
-    service-plan: app-host
-- name: cappyOne-dest-srv
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: cappyOne-dest-srv
-    service-plan: lite
-parameters:
-  deploy_mode: html5-repo
-  enable-parallel-deployments: true
 build-parameters:
   before-all:
   - builder: custom
     commands:
     - npm install --production
     - npx -p @sap/cds-dk cds build --production
-    - cp -r db/data gen/srv/srv/data
+    # - cp -r db/data gen/srv/srv/data
+    - xcopy.exe db\\data\\*.* gen\\srv\\srv\\data\\*.*
