@@ -28,5 +28,5 @@ mta_archives/
 # IDEs
 # .vscode
 # .idea
-app/cappy_one_ui/dist/
 resources/cappyoneui.zip
+app/cappyoneui/dist/
