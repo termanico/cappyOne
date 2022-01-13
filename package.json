@@ -11,7 +11,8 @@
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {
-    "@sap/ux-specification": "^1.96.0"
+    "@sap/ux-specification": "^1.96.0",
+    "passport": "^0.5.2"
   },
   "scripts": {
     "start": "cds run",
