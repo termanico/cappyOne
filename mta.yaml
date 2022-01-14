@@ -1,68 +1,15 @@
+## Generated mta.yaml based on template version 0.4.0
+## appName = cappyOne
+## language=nodejs; multitenant=false
+## approuter=
 _schema-version: "3.1"
 ID: cappyOne
-description: A simple CAP project.
 version: 1.0.0
-modules:
-  - name: cappyOne-srv
-    type: nodejs
-    path: gen/srv
-    provides:
-      - name: srv-api
-        properties:
-          srv-url: ${default-url}
-    parameters:
-      buildpack: nodejs_buildpack
-  - name: cappyOne-app-content
-    type: com.sap.application.content
-    path: .
-    requires:
-      - name: cappyOne-repo-host
-        parameters:
-          content-target: true
-    build-parameters:
-      build-result: resources
-      requires:
-        - artifacts:
-            - cappyoneui.zip
-          name: cappyoneui
-          target-path: resources/
-  - name: cappyoneui
-    type: html5
-    path: app/cappyoneui
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm install
-        - npm run build:cf
-      supported-platforms: []
-resources:
-  - name: cappyOne-repo-host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-name: cappyOne-html5-srv
-      service-plan: app-host
-  - name: cappyOne-dest-srv
-    type: org.cloudfoundry.managed-service
-    parameters:
-      config:
-        HTML5Runtime_enabled: true
-        init_data:
-          instance:
-            destinations:
-              - Authentication: NoAuthentication
-                Name: ui5
-                ProxyType: Internet
-                Type: HTTP
-                URL: https://ui5.sap.com
-            existing_destinations_policy: update
-        version: 1.0.0
-      service: destination
-      service-name: cappyOne-dest-srv
-      service-plan: lite
+description: A simple CAP project.
 parameters:
-  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+  # deploy_mode: html5-repo
+
 build-parameters:
   before-all:
     - builder: custom
@@ -71,3 +18,95 @@ build-parameters:
         - npx -p @sap/cds-dk cds build --production
         # - cp -r db/data gen/srv/srv/data
         - xcopy /Y /E /S /I db\\data gen\\srv\\srv\\data
+
+modules:
+  # --------------------- SERVER MODULE ------------------------
+  - name: cappyOne-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+    # build-parameters:
+    #   builder: npm-ci
+    # requires:
+    #   - name: cappyOne-uaa
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+
+  # --------------------- UI RESOURCE MODULE ------------------------
+  # - name: cappyOne-app-content
+  #   type: com.sap.application.content
+  #   path: .
+  #   build-parameters:
+  #     build-result: resources
+  #     requires:
+  #       - artifacts:
+  #           - cappyoneui.zip
+  #         name: cappyoneui
+  #         target-path: resources/
+  #   requires:
+  #     - name: cappyOne-repo-host
+  #       parameters:
+  #         content-target: true
+
+  # --------------------- UI MODULE ------------------------
+  # - name: cappyoneui
+  #   type: html5
+  #   path: app/cappyoneui
+  #   build-parameters:
+  #     build-result: dist
+  #     builder: custom
+  #     commands:
+  #       - npm install
+  #       - npm run build:cf
+  #     supported-platforms: []
+# resources:
+# services extracted from CAP configuration
+# 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
+# ------------------------------------------------------------
+# - name: cappyOne-uaa
+#   type: org.cloudfoundry.managed-service
+#   parameters:
+#     service: xsuaa
+#     service-plan: application
+#     path: ./xs-security.json
+#     config:
+#       xsappname: cappyOne-${space} #  name + space dependency
+#       tenant-mode: dedicated
+#       role-collections:
+#         - name: "BookManager-${space}"
+#           description: Manage Books
+#           role-template-references:
+#             - $XSAPPNAME.BookManager
+#         - name: "BookViewer-${space}"
+#           description: View Books
+#           role-template-references:
+#             - $XSAPPNAME.BookViewer
+
+# - name: cappyOne-repo-host
+#   type: org.cloudfoundry.managed-service
+#   parameters:
+#     service: html5-apps-repo
+#     service-name: cappyOne-html5-srv
+#     service-plan: app-host
+
+# - name: cappyOne-dest-srv
+#   type: org.cloudfoundry.managed-service
+#   parameters:
+#     config:
+#       HTML5Runtime_enabled: true
+#       init_data:
+#         instance:
+#           destinations:
+#             - Authentication: NoAuthentication
+#               Name: ui5
+#               ProxyType: Internet
+#               Type: HTTP
+#               URL: https://ui5.sap.com
+#           existing_destinations_policy: update
+#       version: 1.0.0
+#     service: destination
+#     service-name: cappyOne-dest-srv
+#     service-plan: lite

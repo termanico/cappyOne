@@ -1,0 +1,48 @@
+## Generated mta.yaml based on template version 0.4.0
+## appName = cappyOne
+## language=nodejs; multitenant=false
+## approuter=
+_schema-version: "3.1"
+ID: cappyOne
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx -p @sap/cds-dk cds build --production
+        # - cp -r db/data gen/srv/srv/data
+        - xcopy /Y /E /S /I db\\data gen\\srv\\srv\\data
+
+modules:
+  # --------------------- SERVER MODULE ------------------------
+  - name: cappyOne-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    requires:
+      - name: cappyOne-uaa
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+
+resources:
+  # services extracted from CAP configuration
+  # 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
+  # ------------------------------------------------------------
+  - name: cappyOne-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      config:
+        xsappname: cappyOne-${space} #  name + space dependency
+        tenant-mode: dedicated

@@ -8,3 +8,5 @@ entity Books : managed {
       title  : String;
       stock  : Integer;
 }
+
+annotate Books @(Common.SemanticKey : [ID]);
