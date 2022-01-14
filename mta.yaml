@@ -14,7 +14,8 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
-        - npm install --production
+        # - npm install --production
+        - npm ci
         - npx -p @sap/cds-dk cds build --production
         # - cp -r db/data gen/srv/srv/data
         - xcopy /Y /E /S /I db\\data gen\\srv\\srv\\data
@@ -26,10 +27,10 @@ modules:
     path: gen/srv
     parameters:
       buildpack: nodejs_buildpack
-    # build-parameters:
-    #   builder: npm-ci
-    # requires:
-    #   - name: cappyOne-uaa
+    build-parameters:
+      builder: npm-ci
+    requires:
+      - name: cappyOne-uaa
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
@@ -62,29 +63,28 @@ modules:
   #       - npm install
   #       - npm run build:cf
   #     supported-platforms: []
-# resources:
-# services extracted from CAP configuration
-# 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
-# ------------------------------------------------------------
-# - name: cappyOne-uaa
-#   type: org.cloudfoundry.managed-service
-#   parameters:
-#     service: xsuaa
-#     service-plan: application
-#     path: ./xs-security.json
-#     config:
-#       xsappname: cappyOne-${space} #  name + space dependency
-#       tenant-mode: dedicated
-#       role-collections:
-#         - name: "BookManager-${space}"
-#           description: Manage Books
-#           role-template-references:
-#             - $XSAPPNAME.BookManager
-#         - name: "BookViewer-${space}"
-#           description: View Books
-#           role-template-references:
-#             - $XSAPPNAME.BookViewer
-
+resources:
+  # services extracted from CAP configuration
+  # 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
+  # ------------------------------------------------------------
+  - name: cappyOne-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: cappyOne-${space} #  name + space dependency
+        tenant-mode: dedicated
+        role-collections:
+          - name: "BookManager-${space}"
+            description: Manage Books
+            role-template-references:
+              - $XSAPPNAME.BookManager
+          - name: "BookViewer-${space}"
+            description: View Books
+            role-template-references:
+              - $XSAPPNAME.BookViewer
 # - name: cappyOne-repo-host
 #   type: org.cloudfoundry.managed-service
 #   parameters:
