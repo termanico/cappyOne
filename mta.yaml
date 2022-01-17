@@ -14,9 +14,9 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
-        # - npm install --production
-        - npm ci
-        - npx -p @sap/cds-dk cds build --production
+        - npm install #--production
+        # - npm ci
+        - npx -p @sap/cds-dk cds build #--production
         # - cp -r db/data gen/srv/srv/data
         - xcopy /Y /E /S /I db\\data gen\\srv\\srv\\data
 

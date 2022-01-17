@@ -1,0 +1,41 @@
+*Install latest Fiori Yo Generator:
+npm.cmd install -g @sap/generator-fiori@latest
+
+*Clone/Add/Pull all Git Submodules:
+git clone https://ext-github.swm.de/SWM/pt.smshub.comp_lib.git --recursive
+
+(vorher in Verzeichnis wechseln!)
+git submodule add https://ext-github.swm.de/SWM/pt.smshub.isartiger.git isartiger dir
+git submodule add https://ext-github.swm.de/SWM/pt.smshub.kundendialog.git kundendialog
+
+git submodule foreach git status
+
+git submodule foreach git pull origin master
+git submodule foreach git pull origin prod_14062021
+
+Keytar-Installation vom SWM NPM Repo
+
+npm install --no-optional --no-scripts keytar@7.2.0
+
+Umgebungsvariablen in der PowerShell setzen (https://www.windowspro.de/script/umgebungsvariablen-setzen-anzeigen-loeschen-powershell):
+
+Anzeigen:
+Get-ChildItem env:
+
+Setzen:
+$env:PATH += "c:\test"
+$env:http_proxy="http://127.0.0.1:8887/"
+$env:https_proxy="http://127.0.0.1:8887/"
+$env:NODE_EXTRA_CA_CERTS="C:\Users\Klingbeil.Thorsten\ca-certificates.crt"
+$env:NODE_EXTRA_CA_CERTS="C:\\Users\\Klingbeil.Thorsten\\ca-certificates.crt"
+$env:KUBECONFIG="C:\\Users\\klingbeil.thorsten\\AppData\\Local\\Programs\\Microsoft VS Code\\bin\\kubeconfig.yml"
+
+Löschen:
+Remove-Item env:\NODE_EXTRA_CA_CERTS
+
+Untrack Git Objects:
+git rm -r --cached app/cappyoneui/dist/
+
+Kubernetes:
+Start:
+kubectl cluster-info --certificate-authority "C:\\Users\\Klingbeil.Thorsten\\ca-certificates.crt"
