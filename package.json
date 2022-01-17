@@ -15,9 +15,6 @@
     "@sap/ux-specification": "^1.96.0",
     "passport": "^0.5.2"
   },
-  "engines": {
-    "node": "^14"
-  },
   "scripts": {
     "start": "cds run",
     "undeploy": "cf undeploy cappyOne --delete-services --delete-service-keys"
@@ -54,18 +51,11 @@
         "credentials": {
           "database": ":memory:"
         }
-      },
-      "uaa": {
-        "kind": "xsuaa",
-        "credentials": {}
       }
     },
     "features": {
       "in_memory_db": true,
       "fiori_preview": true
     }
-  },
-  "sapux": [
-    "app/cappyoneui"
-  ]
+  }
 }
